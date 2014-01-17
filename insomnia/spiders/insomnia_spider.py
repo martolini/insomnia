@@ -13,16 +13,18 @@ class InsomniaSpider(BaseSpider):
 
 	def append_and_start_request(self):
 		with open('urls.txt') as urlfile:
-			for url in urlfile.readlines():
+			for rawurl in urlfile.readlines():
+				url = rawurl.rstrip('\n')
 				if url not in self.urls:
 					self.urls.append(url)
 		if self.counter < len(self.urls):
-			return Request(url=self.urls[self.counter], callback=self.parse_thread)
 			self.counter += 1
-		return None
+			return Request(url=self.urls[self.counter-1], callback=self.parse_thread)
+		else:
+			return None
 
 	def start_requests(self):
-		yield self.append_and_start_request()
+		return [self.append_and_start_request()]
 
 	def parse_thread(self, response):
 		hxs = HtmlXPathSelector(response)
@@ -51,9 +53,10 @@ class InsomniaSpider(BaseSpider):
 
 		next_page = hxs.select('//li[@class="next"]/a/@href').extract()
 		if next_page:
+			print next_page[0]
 			yield Request(url=next_page[0], callback=self.parse_thread)
-
-		self.append_and_start_request()
+		else:
+			yield self.append_and_start_request()
 
 
 
