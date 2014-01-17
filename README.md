@@ -11,3 +11,7 @@ Open up urls.txt and put the URL of each thread you want to scrape
 ----
 
 Open up terminal, go to the folder containing the README.me file and type 'scrapy crawl insomnia' without the '', and the data will populate your table.
+
+----
+
+Run the .sql file or manually paste it into a query and it will create a table in the current database.
